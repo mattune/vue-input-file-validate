@@ -1,5 +1,5 @@
 # vue-input-file-validate
-ファイルのバイナリ情報でファイルタイプチェックをするやつ
+ファイルのバイナリ情報でファイルタイプチェックをするやつ。  
 拡張子偽装しててもある程度安心！
 
 [DEMO](https://mattune.github.io/vue-input-file-validate/)
