@@ -1,22 +1,24 @@
 <template>
   <div class="vifv_input">
-    <input type="file" v-on:change="init" :name="name">
+    <input type="file" v-on:change="init" :name="name" :required="required">
     <span class="error_txt" v-html="errorTxt" v-if="errorTxt.length"></span>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'vifvInput',
   props: {
-    type: String,
-    name: String
+    checkType: String,
+    name: String,
+    multiple: String,
+    required: String,
   },
   data () {
     return {
       checkFile: null,
-      originalFile: null,
-      errorTxt: ''
+      errorTxt: '',
+      checkTypeArray: [],
     }
   },
   methods:{
@@ -24,6 +26,7 @@ export default {
       e.preventDefault();
       const _this = this;
 
+      _this.checkTypeArray = this.checkType.split(',');
       _this.checkFile = e.target.files[0];
       _this.checkResult(_this.checkFile);
     },
@@ -33,13 +36,18 @@ export default {
 
       let reader = new FileReader();
       reader.onload = function(){
-        _this.checkFileType(reader.result).then(function(values) {
-          _this.$emit('checkResult', _this.checkFile);
-        });
+        _this.checkFileType(reader.result)
+          .then(function(values) {
+            _this.$emit('checkResult', _this.checkFile);
+          })
+          .catch(function(error){
+            _this.checkFile = null;
+            _this.$emit('checkResult', _this.checkFile);
+          });
       }
 
       reader.readAsArrayBuffer(file);
-  　},
+    },
 
     checkFileType: function(target, cb){
       const _this = this;
@@ -73,18 +81,20 @@ export default {
         else if (headerStr.indexOf('OggS') != -1) { // OGGはヘッダーに「OggS」を含む
           fileType = 'ogg';
         }
-        else if (headerStr.indexOf('ftyp') != -1) { // MP4はヘッダーに「OggS」を含む
+        else if (headerStr.indexOf('ftyp') != -1) { // MP4はヘッダーに「ftyp」を含む
           fileType = 'mp4';
         }
-        else {
-          _this.errorTxt = '不正なファイル形式です。（拡張子を偽装してる時などに表示）';
+        else if (headerStr.indexOf('%PDF') != -1) { // PDFはヘッダーに「%PDF」を含む
+          fileType = 'pdf';
         }
 
-        if(fileType != 'unknown' && fileType == _this.type) {
+        // fileTypeのどれかに一致したら
+        if(_this.checkTypeArray.includes(fileType)) {
           resolve(fileType);
         }
         else {
-          _this.errorTxt = '使用できないファイル形式です。（指定した拡張子以外のファイルの時に表示）';
+          _this.errorTxt = '使用できないファイル形式です。';
+          reject("ERROR");
         }
       });
 

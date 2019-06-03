@@ -1,29 +1,31 @@
 # vue-input-file-validate
+ファイルのバイナリ情報でファイルタイプチェックをするやつ
+拡張子偽装しててもある程度安心！
 
-## Project setup
-```
-npm install
-```
+[DEMO](https://mattune.github.io/vue-input-file-validate/)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 導入方法
+1. /src/components/vifv-input.vue を任意の場所に追加。
 
-### Compiles and minifies for production
-```
-npm run build
+## 使用方法
+```html
+<vifvInput name="sample" checkType="png,jpg,gif" required @checkResult="getResult"/>
 ```
 
-### Run your tests
-```
-npm run test
-```
+checkTypeに判定したい拡張子、@checkResultに実行したいメソッドを記入。
 
-### Lints and fixes files
+### オプション
+```html
+<vifvInput checkType="png,jpg,gif"/>
 ```
-npm run lint
-```
+→checkTypeはカンマ区切りで複数してい可能。
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+```html
+<vifvInput checkType="png,jpg,gif" required/>
+```
+→requiredは自由に選択可能。
+
+```html
+<vifvInput name="sample" checkType="png,jpg,gif" required @checkResult="getResult"/>
+```
+→@checkResultは親コンポーネントのメソッドを指定可能。空でも可。

@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <vifvInput type="jpg" name="sample" @checkResult="getResult"/>
-
-    <div id="checkResult">
-      チェック結果 : <strong id="resultTxt" v-html="formValidate"></strong>
-    </div>
+    <form action="#">
+      <vifvInput checkType="png,jpg,gif" name="sample" required @checkResult="getResult"/>
+      <button id="btnSubmit" v-bind:disabled="checkDisabled">送信する</button>
+    </form>
   </div>
 </template>
 
@@ -18,12 +17,24 @@ export default {
   },
   data () {
     return {
-      formValidate: ''
+      checkDisabled: true
     }
   },
   methods: {
     getResult(result){
+      // -----------------------
+      // この中は自由に処理してください
+      // -----------------------
       console.log(result);
+      // とりあえずファイル選択したFile情報を返している
+      // エラーの時はnull
+
+      if(result) {
+        this.checkDisabled = false;
+      }
+      else {
+        this.checkDisabled = true;
+      }
     }
   }
 }
@@ -34,11 +45,17 @@ export default {
   padding: 100px;
 }
 
-#checkResult {
+#btnSubmit {
+  display: block;
   margin-top: 50px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
 
-  #resultTxt {
-    font-size: 2rem;
+  &:disabled {
+    background-color: #999;
+    cursor: not-allowed;
   }
 }
 </style>
